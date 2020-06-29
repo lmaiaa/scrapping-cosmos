@@ -1,0 +1,24 @@
+{
+  "name": "scrapping-cosmos",
+  "version": "1.0.0",
+  "description": "Scrapping de produtos no site: https://cosmos.bluesoft.com.br/",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lmaiaa/scrapping-cosmos.git"
+  },
+  "author": "Luccas Maia",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lmaiaa/scrapping-cosmos/issues"
+  },
+  "homepage": "https://github.com/lmaiaa/scrapping-cosmos#readme",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "objects-to-csv": "^1.3.6",
+    "read-excel-file": "^4.0.6"
+  }
+}
