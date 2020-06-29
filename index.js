@@ -7,23 +7,38 @@ var googleConfig = require('./config').googleSearch;
 async function getProduct(query, price) {
     const q = encodeURI(query)
     const url = `${googleConfig.url}?q=${q}&key=${googleConfig.credentials.apiKey}&siteSearch=cosmos.bluesoft.com.br&cx=${googleConfig.credentials.cx}&fields=items`
-    const { data } = await axios.get(url);
-    try {
+    try{
+      const { data } = await axios.get(url);
+      if (data.items[0].pagemap.metatags[0]['og:description'].includes("NCM")){
         return {
-            ean: query,
-            title: data.items[0].pagemap.metatags[0]['og:title'],
-            description: data.items[0].pagemap.metatags[0]['og:description'],
-            image: data.items[0].pagemap.metatags[0]['og:image'],
-            price
-        }
-    } catch (err) {
-        return {
-            ean: query,
-            title: '',
-            description: '',
-            image: '',
-            price
-        }
+          ean: query,
+          title: data.items[0].pagemap.metatags[0]['og:title'],
+          description: data.items[0].pagemap.metatags[0]['og:description'],
+          NCM:data.items[0].pagemap.metatags[0]['og:description'].split("-")[1].split("NCM:")[1],
+          image: data.items[0].pagemap.metatags[0]['og:image'],
+          price
+      }
+      }else{
+      return {
+        ean: query,
+        title: data.items[0].pagemap.metatags[0]['og:title'],
+        description: data.items[0].pagemap.metatags[0]['og:description'],
+        NCM: "",
+        image: data.items[0].pagemap.metatags[0]['og:image'],
+        price
+    }}
+    }catch(err){
+      console.log("dei erro na requisição")
+      return {
+        ean: query,
+        title: '',
+        description: '',
+        NCM: "",
+        image: '',
+        price
+    }
+
+ 
     }
 }
 
@@ -39,12 +54,12 @@ function awaitRequest(time, callback) {
   }
 
 (async() => {
-    const rows = await readXlsx('./input/coleta1.xlsx')
+    const rows = await readXlsx('./input/coteta2.xlsx')
 
-    const products = await Promise.all(rows.map(async ([EAN, price], index) => {
+    const products = await Promise.all(rows.map(async ([ean, price], index) => {
     return await awaitRequest(index * 600, async () => {
         console.log(`Got product! ${rows.length}/${index+1}`)
-        return await getProduct(EAN, price)
+        return await getProduct(ean, price)
       })}))
    console.log(products)
     const csv = new ObjectsToCsv(products);
